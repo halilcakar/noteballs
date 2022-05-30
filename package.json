@@ -8,6 +8,7 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore"
   },
   "dependencies": {
+    "bulma": "^0.9.4",
     "vue": "^3.2.33",
     "vue-router": "^4.0.15"
   },
