@@ -4,15 +4,16 @@
       <div class="navbar-brand">
         <div class="navbar-item is-size-4 is-family-monospace">Noteballs</div>
 
-        <a role="button" class="navbar-burger" :class="{ 'is-active': showMobileNav }" aria-label="menu"
-          aria-expanded="false" data-target="navbarBasicExample" @click.prevent="showMobileNav = !showMobileNav">
+        <a ref="navbarBurgerRef" role="button" class="navbar-burger" :class="{ 'is-active': showMobileNav }"
+          aria-label="menu" aria-expanded="false" data-target="navbarBasicExample"
+          @click.prevent="showMobileNav = !showMobileNav">
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
         </a>
       </div>
 
-      <div id="navbarBasicExample" class="navbar-menu" :class="{ 'is-active': showMobileNav }">
+      <div ref="navbarMenuRef" id="navbarBasicExample" class="navbar-menu" :class="{ 'is-active': showMobileNav }">
         <div class="navbar-end">
           <RouterLink @click="showMobileNav = false" to="/" class="navbar-item" active-class="is-active">
             Notes
@@ -28,8 +29,13 @@
 
 <script setup>
 import { ref } from "vue";
+import { onClickOutside } from "@vueuse/core";
 
 const showMobileNav = ref(false);
+const navbarMenuRef = ref(null);
+const navbarBurgerRef = ref(null);
+
+onClickOutside(navbarMenuRef, () => showMobileNav.value = false, { ignore: [navbarBurgerRef] });
 </script>
 
 <style>

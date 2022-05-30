@@ -6,11 +6,11 @@ export const useStoreNotes = defineStore({
     notes: [
       {
         id: "id1",
-        content: "123",
+        content: "Lorem ipsum",
       },
       {
         id: "id2",
-        content: "1234",
+        content: "Some beatiful text here!",
       },
     ],
   }),

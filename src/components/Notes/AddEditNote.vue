@@ -4,14 +4,12 @@
 
     <div class="field">
       <div class="control">
-        <textarea
-          v-model="modelValue"
-          @input="$emit('update:modelValue', modelValue)"
-          class="textarea"
-          :placeholder="placeholder"
-          ref="textareaRef"
-        />
+        <textarea v-autofocus v-model="modelValue" @input="$emit('update:modelValue', modelValue)" class="textarea"
+          :placeholder="placeholder" ref="textareaRef" />
       </div>
+      <small class="has-text-white">
+        <span>{{ modelValue.length }}</span> / 100
+      </small>
     </div>
 
     <div class="field is-grouped is-grouped-right">
@@ -24,8 +22,9 @@
 
 <script setup>
 import { ref } from "vue";
+import { vAutofocus } from "@/directives";
 
-const props = defineProps({
+defineProps({
   modelValue: {
     type: String,
     required: true,
