@@ -6,14 +6,16 @@
 </template>
 
 <script setup>
-import { RouterView } from "vue-router";
-import NavBar from "@/components/Layout/NavBar.vue";
-import { useStoreNotes } from "@/stores/notes";
 import { onMounted } from "vue";
+import { RouterView } from "vue-router";
+import { useStoreAuth } from "@/stores/auth";
+import NavBar from "@/components/Layout/NavBar.vue";
 
-const storeNotes = useStoreNotes();
+const storeAuth = useStoreAuth();
 
-onMounted(() => storeNotes.getNotes());
+onMounted(() => {
+  storeAuth.init();
+});
 </script>
 
 <style>

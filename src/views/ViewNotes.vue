@@ -2,18 +2,28 @@
   <div class="notes">
     <AddEditNote v-model="newNote" ref="addEditNoteRef">
       <template #buttons>
-        <button @click="addNote" :disabled="!newNote.trim()" class="button is-link has-background-success">
+        <button
+          @click="addNote"
+          :disabled="!newNote.trim()"
+          class="button is-link has-background-success"
+        >
           Add New Notes
         </button>
       </template>
     </AddEditNote>
 
-    <progress v-if="!storeNotes.notesLoaded" class="progress is-large is-success" max="100" />
+    <progress
+      v-if="!storeNotes.notesLoaded"
+      class="progress is-large is-success"
+      max="100"
+    />
     <template v-else>
       <Note v-for="note in storeNotes.notes" :key="note.id" :note="note" />
 
-      <div class="is-size-4 has-text-centered has-text-grey-light is-family-monospace py-6"
-        v-if="!storeNotes.notes.length">
+      <div
+        class="is-size-4 has-text-centered has-text-grey-light is-family-monospace py-6"
+        v-if="!storeNotes.notes.length"
+      >
         No notes here yet..
       </div>
     </template>
@@ -21,7 +31,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 
 import { useStoreNotes } from "@/stores/notes";
 import { useWatchCharacters } from "@/composables/useWatchCharacters";
@@ -39,5 +49,7 @@ const addNote = () => {
   addEditNoteRef.value.focusTextarea();
 };
 
-useWatchCharacters(newNote)
+useWatchCharacters(newNote);
+
+onMounted(() => storeNotes.getNotes());
 </script>
