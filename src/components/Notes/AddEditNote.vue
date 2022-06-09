@@ -4,8 +4,15 @@
 
     <div class="field">
       <div class="control">
-        <textarea maxlength="100" v-autofocus v-model="modelValue" @input="$emit('update:modelValue', modelValue)"
-          class="textarea" :placeholder="placeholder" ref="textareaRef" />
+        <textarea
+          maxlength="100"
+          v-autofocus
+          :value="modelValue"
+          @input="$emit('update:modelValue', $event.target.value)"
+          class="textarea"
+          :placeholder="placeholder"
+          ref="textareaRef"
+        />
       </div>
       <small class="has-text-white">
         <span>{{ modelValue.length }}</span> / 100
