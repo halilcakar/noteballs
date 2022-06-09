@@ -8,7 +8,15 @@
       </template>
     </AddEditNote>
 
-    <Note v-for="note in storeNotes.notes" :key="note.id" :note="note" />
+    <progress v-if="!storeNotes.notesLoaded" class="progress is-large is-success" max="100" />
+    <template v-else>
+      <Note v-for="note in storeNotes.notes" :key="note.id" :note="note" />
+
+      <div class="is-size-4 has-text-centered has-text-grey-light is-family-monospace py-6"
+        v-if="!storeNotes.notes.length">
+        No notes here yet..
+      </div>
+    </template>
   </div>
 </template>
 

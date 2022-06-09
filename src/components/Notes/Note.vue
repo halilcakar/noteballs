@@ -3,8 +3,9 @@
     <main class="card-content">
       <div class="content">
         {{ note.content }}
-        <div class="has-text-right has-text-grey-light mt-2">
-          <small> {{ characterLength }} </small>
+        <div class="columns is-mobile has-text-grey-light mt-2">
+          <small class="column"> {{ timesAgo }} </small>
+          <small class="column has-text-right"> {{ characterLength }} </small>
         </div>
       </div>
     </main>
@@ -17,17 +18,21 @@
 </template>
 
 <script setup>
+import { formatDistance } from 'date-fns'
 import { reactive, computed } from "@vue/reactivity";
-import { useStoreNotes } from "@/stores/notes";
 import ModalDeleteNote from "./ModalDeleteNote.vue";
-
-
 
 const props = defineProps({
   note: {
     type: Object,
     required: true,
   },
+});
+
+const timesAgo = computed(() => {
+  return formatDistance(new Date(props.note.createdAt), new Date(), {
+    addSuffix: true,
+  });
 });
 
 const characterLength = computed(() => {

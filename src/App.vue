@@ -8,6 +8,12 @@
 <script setup>
 import { RouterView } from "vue-router";
 import NavBar from "@/components/Layout/NavBar.vue";
+import { useStoreNotes } from "@/stores/notes";
+import { onMounted } from "vue";
+
+const storeNotes = useStoreNotes();
+
+onMounted(() => storeNotes.getNotes());
 </script>
 
 <style>

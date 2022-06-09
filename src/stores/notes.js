@@ -1,35 +1,62 @@
 import { defineStore } from "pinia";
+import {
+  doc,
+  addDoc,
+  deleteDoc,
+  updateDoc,
+  collection,
+  onSnapshot,
+  query,
+  orderBy,
+} from "firebase/firestore";
 import { db } from "@/config/firebase";
+
+const notesCollectionRef = collection(db, "notes");
+const notesCollectionQuery = query(
+  notesCollectionRef,
+  orderBy("updatedAt", "desc")
+);
 
 export const useStoreNotes = defineStore({
   id: "storeNotes",
   state: () => ({
-    notes: [
-      {
-        id: "id1",
-        content: "Lorem ipsum dolor sit amet consectetur.",
-      },
-      {
-        id: "id2",
-        content: "Some beatiful text here!",
-      },
-    ],
+    notesLoaded: false,
+    notes: [],
   }),
   actions: {
-    addNote(content) {
-      this.notes.unshift({
-        id: "id" + new Date().getTime(),
-        content,
+    async getNotes() {
+      this.notesLoaded = false;
+      onSnapshot(notesCollectionQuery, (querySnapshot) => {
+        const notes = [];
+        querySnapshot.forEach((note) => {
+          let data = note.data();
+          console.log(data.createdAt.toDate());
+          notes.push({
+            id: note.id,
+            ...data,
+            createdAt: new Date(data.createdAt?.toDate()),
+            updatedAt: new Date(data.updatedAt?.toDate()),
+          });
+        });
+        this.notes = notes;
+        this.notesLoaded = true;
       });
     },
-    deleteNote(id) {
-      this.notes = this.notes.filter((note) => note.id !== id);
+    async addNote(content) {
+      await addDoc(notesCollectionRef, {
+        content,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
     },
-    updateNote(id, content) {
-      const note = this.notes.find((note) => note.id === id);
-      if (note) {
-        note.content = content;
-      }
+    async deleteNote(id) {
+      await deleteDoc(doc(notesCollectionRef, id));
+    },
+    async updateNote(id, content) {
+      await updateDoc(doc(notesCollectionRef, id), {
+        content,
+        updatedAt: new Date(),
+      });
     },
   },
   getters: {
@@ -40,9 +67,10 @@ export const useStoreNotes = defineStore({
       return state.notes.length;
     },
     totalCharactersOfAllNotes: (state) => {
-      return state.notes.reduce((total, note) => {
-        return total + note.content.length;
-      }, 0);
+      return state.notes.reduce(
+        (total, note) => total + note.content.length,
+        0
+      );
     },
   },
 });
