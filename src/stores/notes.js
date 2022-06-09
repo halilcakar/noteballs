@@ -10,12 +10,11 @@ import {
   orderBy,
 } from "firebase/firestore";
 import { db } from "@/config/firebase";
+import { useStoreAuth } from "@/stores/auth";
 
-const notesCollectionRef = collection(db, "notes");
-const notesCollectionQuery = query(
-  notesCollectionRef,
-  orderBy("updatedAt", "desc")
-);
+let notesCollectionRef = null;
+let notesCollectionQuery = null;
+let getNotesSnapshot = null;
 
 export const useStoreNotes = defineStore({
   id: "storeNotes",
@@ -24,13 +23,21 @@ export const useStoreNotes = defineStore({
     notes: [],
   }),
   actions: {
+    init() {
+      const authStore = useStoreAuth();
+      notesCollectionRef = collection(db, "users", authStore.user.id, "notes");
+      notesCollectionQuery = query(
+        notesCollectionRef,
+        orderBy("updatedAt", "desc")
+      );
+      this.getNotes();
+    },
     async getNotes() {
       this.notesLoaded = false;
-      onSnapshot(notesCollectionQuery, (querySnapshot) => {
+      getNotesSnapshot = onSnapshot(notesCollectionQuery, (querySnapshot) => {
         const notes = [];
         querySnapshot.forEach((note) => {
           let data = note.data();
-          console.log(data.createdAt.toDate());
           notes.push({
             id: note.id,
             ...data,
@@ -41,6 +48,10 @@ export const useStoreNotes = defineStore({
         this.notes = notes;
         this.notesLoaded = true;
       });
+    },
+    clearNotes() {
+      this.notes = [];
+      if (getNotesSnapshot) getNotesSnapshot();
     },
     async addNote(content) {
       await addDoc(notesCollectionRef, {
